@@ -5,7 +5,7 @@
   register: install_status
 
 - name: Set installed variable
-  set_fact: is_installed='{{ install_status.stdout == elasticsearch.version }}'
+  set_fact: is_installed='{{ install_status.stdout == elasticsearch_version }}'
 
 - name: Add dependencies repository
   apt_repository: repo='ppa:webupd8team/java' update_cache=yes
@@ -19,29 +19,30 @@
 
 - name: Download
   get_url: >
-    url={{ elasticsearch_url }}
-    dest=/tmp/elasticsearch-{{ elasticsearch.version }}.deb
+    url="{{ elasticsearch_url }}"
+    dest="/tmp/elasticsearch-{{ elasticsearch_version }}.deb"
   when: not is_installed
 
 - name: Install
-  apt: deb=/tmp/elasticsearch-{{ elasticsearch.version }}.deb
+  apt: deb="/tmp/elasticsearch-{{ elasticsearch_version }}.deb"
   when: not is_installed
 
 - name: Set port
   replace: >
     dest="/etc/elasticsearch/elasticsearch.yml"
     regexp='^#?(http\.port\:).*'
-    replace='\1 {{ elasticsearch.port }}'
+    replace='\1 {{ elasticsearch_port }}'
 
 - name: Flush handlers to apply config changes
   meta: flush_handlers
 
 - name: Enable Service
   service: name=elasticsearch enabled=yes
+  changed_when: false
 
 - name: Ensure Elastic Search is started
   service: name=elasticsearch state=started
 
 - name: Remove tmp files
-  file: path=/tmp/elasticsearch-{{ elasticsearch.version }}.deb state=absent
+  file: path="/tmp/elasticsearch-{{ elasticsearch_version }}.deb" state=absent
   when: not is_installed
