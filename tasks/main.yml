@@ -9,13 +9,16 @@
 
 - name: Add dependencies repository
   apt_repository: repo='ppa:webupd8team/java' update_cache=yes
+  when: not is_installed
 
 - name: Set dependencies License
   shell: echo debconf shared/accepted-oracle-license-v1-1 select true | sudo debconf-set-selections
   changed_when: false
+  when: not is_installed
 
 - name: Install Dependencies
   apt: pkg=oracle-java8-installer state=latest
+  when: not is_installed
 
 - name: Download
   get_url: >
