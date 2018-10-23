@@ -4,9 +4,6 @@
   changed_when: false
   register: install_status
 
-- debug:
-    msg: "{{ install_status.stdout }}"
-
 - name: Set installed variable
   set_fact: is_installed='{{ install_status.stdout == elasticsearch_version }}'
 
