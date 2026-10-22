@@ -2,23 +2,39 @@
 
 [![CI](https://github.com/phansible/role-elasticsearch/actions/workflows/ci.yml/badge.svg)](https://github.com/phansible/role-elasticsearch/actions/workflows/ci.yml)
 
-An Ansible Role that installs [Elasticsearch](https://www.elastic.co/products/elasticsearch) on Ubuntu specifically created with [Phansible](http://phansible.com/) in mind.
+An Ansible Role that installs [Elasticsearch](https://www.elastic.co/products/elasticsearch) on Ubuntu and Debian specifically created with [Phansible](http://phansible.com/) in mind.
 
 ## Requirements
 
-// TODO
+- Ubuntu 22.04, 24.04, 26.04 or Debian 12, 13 (x86_64)
+- Ansible >= 2.15
+
+Elasticsearch is installed from Elastic's official apt repository and runs on the JDK bundled with the package, so no system Java is needed.
 
 ## Role Variables
 
-// TODO
+| Variable | Default | Description |
+| --- | --- | --- |
+| `elasticsearch_version` | `'9'` | Major version; selects the `<major>.x` channel of the Elastic apt repository. |
+| `elasticsearch_port` | `'9200'` | HTTP port written to `http.port` in `elasticsearch.yml`. |
+| `elasticsearch_heap_size` | `''` | JVM heap (for example `512m` or `2g`). Empty leaves Elasticsearch to size the heap from available memory. |
+
+The package enables security on first install (TLS on HTTP and a generated `elastic` password). Reset the password with `/usr/share/elasticsearch/bin/elasticsearch-reset-password -u elastic`.
 
 ## Dependencies
 
-// TODO
+None.
 
 ## Example Playbook
 
-// TODO
+```yaml
+- hosts: search
+  become: yes
+  vars:
+    elasticsearch_heap_size: 1g
+  roles:
+    - role-elasticsearch
+```
 
 ## License
 

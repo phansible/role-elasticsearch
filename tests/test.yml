@@ -1,5 +1,7 @@
 ---
-- hosts: localhost
+- hosts: all
   remote_user: root
+  vars:
+    elasticsearch_heap_size: 512m
   roles:
     - role-elasticsearch
