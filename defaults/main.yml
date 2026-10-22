@@ -1,4 +1,4 @@
 ---
+elasticsearch_version: '9'
 elasticsearch_port: '9200'
-elasticsearch_version: 5.5.0
-elasticsearch_url: "https://download.elastic.co/elasticsearch/elasticsearch/elasticsearch-{{ elasticsearch_version }}.deb"
+elasticsearch_heap_size: ''
