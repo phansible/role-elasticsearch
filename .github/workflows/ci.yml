@@ -11,11 +11,12 @@ jobs:
       fail-fast: false
       matrix:
         image: ['ubuntu:22.04', 'ubuntu:24.04', 'ubuntu:26.04', 'debian:12', 'debian:13']
-    name: ${{ matrix.image }}
+        security: [true, false]
+    name: ${{ matrix.image }} security=${{ matrix.security }}
     env:
       ANSIBLE_ROLES_PATH: ..
       ANSIBLE_FORCE_COLOR: '1'
-      PLAYBOOK: ansible-playbook -i test, -c community.docker.docker tests/test.yml
+      PLAYBOOK: ansible-playbook -i test, -c community.docker.docker tests/test.yml -e elasticsearch_security_enabled=${{ matrix.security }}
     steps:
       - uses: actions/checkout@v4
 
@@ -51,8 +52,9 @@ jobs:
       - name: Check the installed Elasticsearch version
         run: docker exec test dpkg-query -W -f '${Version}' elasticsearch | grep -q '^9\.'
 
-      # security is on by default, so an unauthenticated request getting 401 proves it is serving
-      - name: Check Elasticsearch answers on its port
+      # an unauthenticated request getting 401 proves a secured node is serving
+      - name: Check secured Elasticsearch answers on its port
+        if: matrix.security
         run: |
           docker exec test python3 -c "
           import ssl, urllib.request, urllib.error
@@ -62,4 +64,14 @@ jobs:
               assert e.code == 401, e.code
           else:
               raise SystemExit('expected 401 from a secured node')
+          "
+
+      - name: Check unsecured Elasticsearch answers plain HTTP without auth
+        if: ${{ !matrix.security }}
+        run: |
+          docker exec test python3 -c "
+          import json, urllib.request
+          version = json.load(urllib.request.urlopen('http://127.0.0.1:9200'))['version']['number']
+          assert version.startswith('9.'), version
+          print(version)
           "

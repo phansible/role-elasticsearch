@@ -18,8 +18,9 @@ Elasticsearch is installed from Elastic's official apt repository and runs on th
 | `elasticsearch_version` | `'9'` | Major version; selects the `<major>.x` channel of the Elastic apt repository. |
 | `elasticsearch_port` | `'9200'` | HTTP port written to `http.port` in `elasticsearch.yml`. |
 | `elasticsearch_heap_size` | `''` | JVM heap (for example `512m` or `2g`). Empty leaves Elasticsearch to size the heap from available memory. |
+| `elasticsearch_security_enabled` | `true` | When `false`, turns off security, enrollment and TLS so the node serves plain HTTP without authentication. Only for local development. |
 
-The package enables security on first install (TLS on HTTP and a generated `elastic` password). Reset the password with `/usr/share/elasticsearch/bin/elasticsearch-reset-password -u elastic`.
+With `elasticsearch_security_enabled: true` the package's defaults apply: security is enabled on first install (TLS on HTTP and a generated `elastic` password). Reset the password with `/usr/share/elasticsearch/bin/elasticsearch-reset-password -u elastic`.
 
 ## Dependencies
 
