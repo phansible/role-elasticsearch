@@ -2,3 +2,4 @@
 elasticsearch_version: '9'
 elasticsearch_port: '9200'
 elasticsearch_heap_size: ''
+elasticsearch_security_enabled: true

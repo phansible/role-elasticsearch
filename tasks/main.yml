@@ -46,6 +46,27 @@
     line: "http.port: {{ elasticsearch_port }}"
   notify: restart elasticsearch
 
+- name: Toggle Elasticsearch security
+  become: yes
+  lineinfile:
+    path: /etc/elasticsearch/elasticsearch.yml
+    regexp: '^#?xpack\.security\.enabled:'
+    line: "xpack.security.enabled: {{ elasticsearch_security_enabled | bool | lower }}"
+  notify: restart elasticsearch
+
+# the package's security auto-configuration writes these as nested blocks, so lineinfile cannot target them
+- name: Toggle enrollment and TLS from the security auto-configuration
+  become: yes
+  replace:
+    path: /etc/elasticsearch/elasticsearch.yml
+    regexp: '{{ item }} (true|false)$'
+    replace: '\1 {{ elasticsearch_security_enabled | bool | lower }}'
+  loop:
+    - '^(xpack\.security\.enrollment\.enabled:)'
+    - '^(xpack\.security\.http\.ssl:\n  enabled:)'
+    - '^(xpack\.security\.transport\.ssl:\n  enabled:)'
+  notify: restart elasticsearch
+
 - name: Set heap size
   become: yes
   copy:
