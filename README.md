@@ -1,6 +1,6 @@
 # Phansible Role: Elasticsearch
 
-[![Build Status](https://travis-ci.org/phansible/role-elasticsearch.svg?branch=master)](https://travis-ci.org/phansible/role-elasticsearch)
+[![CI](https://github.com/phansible/role-elasticsearch/actions/workflows/ci.yml/badge.svg)](https://github.com/phansible/role-elasticsearch/actions/workflows/ci.yml)
 
 An Ansible Role that installs [Elasticsearch](https://www.elastic.co/products/elasticsearch) on Ubuntu specifically created with [Phansible](http://phansible.com/) in mind.
 
